@@ -1,6 +1,6 @@
-import pg from "pg"
+//import pg from "pg"
 
-const { Pool } = pg;
+//const { Pool } = pg;
 
 /* const configDatabase = {
     connectionString: process.env.Database_URL, 
@@ -9,10 +9,16 @@ const { Pool } = pg;
     }
 } */
 
-const configDatabase = {
+/* const configDatabase = {
     connectionString: process.env.Database_URL
-}
+} */
 
-const connection = new Pool(configDatabase);
+/* const connection = new Pool(configDatabase); */
 
-export default connection;
+import pkg from '@prisma/client'
+
+const { PrismaClient } = pkg;
+const prisma = new PrismaClient()
+
+
+export default prisma;

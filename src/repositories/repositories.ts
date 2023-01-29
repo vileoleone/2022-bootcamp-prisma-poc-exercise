@@ -1,16 +1,52 @@
 
-import connection from "../database/database.js";
+//import connection from "../database/database.js";
+import {CattleOnlyObject} from "../protocols/protocols.js"
 
-function selectAllCattle() {
-    return connection.query(`SELECT id, peso, idade, "loteId" AS lote FROM novilha;`)
+import prisma from "../database/database.js"
+
+function selectNumberofCattle() {
+
+    return prisma.novilha.aggregate({
+        _count: {
+            id: true 
+        }
+    })
+
 }
 
 function selectOnlyCattle(piquete: number) {
- return connection.query(`SELECT novilha.id, peso, idade, "loteId" AS lote, piquete_num.id as piquete FROM novilha JOIN lote_gado ON novilha."loteId" = lote_gado.id JOIN piquete_num ON lote_gado."piqueteId" = piquete_num.id WHERE piquete_num.id = $1`, [piquete])
+    return prisma.lote_gado.findMany({
+        where: {
+            piqueteId:piquete
+        },
+        select: {
+            novilha: true
+        },
+    })
+
+}
+
+export async function insertUnique(CattleOnlyObject:CattleOnlyObject) {
+    return prisma.novilha.create({
+     data: CattleOnlyObject
+ })   
+}
+
+export async function updatePiquete(newPiquete: number, id: number) {
+    return prisma.lote_gado.update({
+        where: {
+            id: id
+        },
+        data: {
+         piqueteId: newPiquete
+     } 
+ })   
 }
 
 export const repository = {
-    selectAllCattle, 
-    selectOnlyCattle
+    selectNumberofCattle,
+    selectOnlyCattle, 
+    insertUnique, 
+    updatePiquete
 }
  

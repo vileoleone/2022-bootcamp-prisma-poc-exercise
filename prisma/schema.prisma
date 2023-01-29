@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model lote_gado {
+  id          Int         @id @default(autoincrement())
+  piqueteId   Int
+  piquete_num piquete_num @relation(fields: [piqueteId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lote_gado_fk0")
+  novilha     novilha[]
+}
+
+model novilha {
+  id        Int       @id @default(autoincrement()) @map("number")
+  peso      Int
+  idade     Int
+  loteId    Int
+  lote_gado lote_gado @relation(fields: [loteId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "novilha_fk0")
+}
+
+model piquete_num {
+  id        Int         @id @default(autoincrement())
+  lugar     String
+  tamanho   Int
+  capim     String
+  lote_gado lote_gado[]
+}
